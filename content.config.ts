@@ -123,8 +123,28 @@ export default defineContentConfig({
       type: 'page',
       source: 'about.yml',
       schema: z.object({
+        about: createBaseSchema(),
+        experience: createBaseSchema().extend({
+          items: z.array(z.object({
+            date: z.date(),
+            position: z.string(),
+            company: z.object({
+              name: z.string(),
+              url: z.string(),
+              logo: z.string().editor({ input: 'icon' }),
+              color: z.string()
+            })
+          }))
+        }),
         content: z.object({}),
-        images: z.array(createImageSchema())
+        images: z.array(createImageSchema()),
+        achievements: z.array(z.object({
+          category: z.enum(['Programación', 'Análisis de Datos', 'Desarrollo Web']),
+          title: z.string(),
+          date: z.date(),
+          description: z.string(),
+          certificateUrl: z.string().optional()
+        }))
       })
     })
   }

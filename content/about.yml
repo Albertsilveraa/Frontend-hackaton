@@ -1,27 +1,66 @@
-title: About Me
-description: Learn more about my journey as a Boston-based UX/UI Designer & Front-End Developer, my design philosophy, and my passion for crafting intuitive digital experiences.
-content: |
-  Hi, I'm **Emma Thompson**, a UX/UI Designer and Front-End Developer based right here in Boston. For the past six years, I've been immersed in the world of digital product creation, focusing on building experiences that are not just functional, but genuinely intuitive and engaging for users.
+title: Hey, I'm Leslie Cristina
+description: Me considero una persona alegre, súper curiosa y con una pasión enorme por la física. Me encanta entender cómo funciona el mundo, desde lo más pequeñito como las partículas subatómicas hasta los misterios del universo. La física para mí no es solo una materia, ¡es una forma de ver la vida!
 
-  My path started at **Boston University**, where I earned a degree in Interactive Design. It was there I discovered my dual passion for the visual language of design and the logical puzzle of code. Since then, I've honed my skills in both areas, believing that the best digital products are born from a deep understanding of both aesthetics and implementation.
+about:
+  title: Intereses
+  description: Me fascina todo lo que tenga que ver con el universo desde los agujeros negros hasta cómo cae una manzana 🍎🌌. Amo la física, los experimentos, los acertijos mentales y cualquier cosa que me haga decir '¡Wow, eso tiene sentido!' 🤯⚛️. También disfruto ver animes de ciencia, leer manga, escuchar música lo-fi mientras estudio y compartir datos curiosos que nadie pidió, ¡pero todos agradecen!
 
-  ### My Design Philosophy
+experience:
+  title: Clubs
+  items:
+    - position: "Miembro de"
+      date: "2025-12-18"
+      company:
+        name: Night Owls
+        logo: "i-simple-icons-raycast"
+        url: "https://example.com"
+        color: "#00DC82"
+    - position: "Miembro de"
+      date: "2024-06-15"
+      company:
+        name: Club de Cálculo
+        logo: "i-simple-icons-linear"
+        url: "https://example.com"
+        color: "#FF6363"
+    - position: "Miembro de"
+      date: "2024-04-25"
+      company:
+        name: UX/UI
+        logo: "i-simple-icons-react"
+        url: "https://example.com"
+        color: "#4287f5"
 
-  My design philosophy is rooted in **empathy** and **problem-solving**. I believe great design starts with understanding the 'why' – the user's needs, motivations, and pain points. I use research, iterative prototyping (often with tools like Figma), and user testing to ensure the solutions I build are truly effective.
+content: {}
 
-  I strive to create interfaces that feel effortless, where functionality and beauty work hand-in-hand. Whether I'm crafting pixel-perfect UIs or writing clean Vue.js/Nuxt.js code, my focus is always on creating value for the end-user.
-
-  ### What Drives Me
-
-  What keeps me excited about this work is the constant learning and the challenge of translating complex ideas into simple, elegant solutions. There's nothing more rewarding than seeing a design come to life and knowing it's making someone's digital interaction easier or more enjoyable.
-
-  ### Beyond the Screen
-
-  When I'm not designing or coding, you might find me exploring Boston's latest coffee shops, hiking nearby trails, or occasionally contributing to open-source projects.
-
-  Thanks for stopping by. Feel free to browse my [projects](/projects) or [get in touch](/#contact) if you'd like to collaborate!
 images:
-  - src: https://images.unsplash.com/photo-1744877478622-a78c7a3336f6?q=80&w=1587&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
-    alt: My coffee workspace
-  - src: https://images.unsplash.com/photo-1744429523595-2c06b8611242?q=80&w=1587&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
-    alt: My trip to Tokyo
+  - src: "/img/portfolio-1.jpg"
+    alt: "Portfolio piece 1"
+  - src: "/img/portfolio-2.jpg"
+    alt: "Portfolio piece 2"
+
+achievements:
+  - category: "Programación"
+    title: "Fundamentos de Python"
+    date: 2025-04-23
+    description: "Este certificado acredita la adquisición de conocimientos básicos y esenciales para programar en Python, uno de los lenguajes más versátiles y populares en la actualidad."
+    certificateUrl: "#"
+  - category: "Análisis de Datos"
+    title: "Excel para Análisis de Datos"
+    date: 2025-03-15
+    description: "Este certificado reconoce el dominio de herramientas y funciones de Excel aplicadas al análisis de datos. Se fortaleció las habilidades analíticas y permitió aplicar Excel en la toma de decisiones basada en datos."
+    certificateUrl: "#"
+  - category: "Desarrollo Web"
+    title: "Desarrollo Front-end"
+    date: 2025-03-05
+    description: "Este certificado acredita la formación en el diseño y desarrollo de interfaces web interactivas y responsivas utilizando tecnologías del lado del cliente."
+    certificateUrl: "#"
+  - category: "Programación"
+    title: "JavaScript Avanzado"
+    date: 2024-12-10
+    description: "Certificación que valida el dominio de conceptos avanzados en JavaScript, incluyendo ES6+, programación asíncrona y patrones de diseño."
+    certificateUrl: "#"
+  - category: "Desarrollo Web"
+    title: "Vue.js y Nuxt.js"
+    date: 2024-11-20
+    description: "Certificación especializada en el desarrollo de aplicaciones web modernas utilizando Vue.js y el framework Nuxt.js."
+    certificateUrl: "#"
