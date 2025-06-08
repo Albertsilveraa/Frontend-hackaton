@@ -7,7 +7,7 @@ export const navLinks: NavigationMenuItem[] = [{
 }, {
   label: 'Comunidades',
   icon: 'i-lucide-folder',
-  to: '/projects'
+  to: '/clubs'
 }, {
   label: 'Blog',
   icon: 'i-lucide-file-text',
@@ -17,7 +17,7 @@ export const navLinks: NavigationMenuItem[] = [{
   icon: 'i-lucide-mic',
   to: '/speaking'
 }, {
-  label: 'About',
+  label: 'Perfil',
   icon: 'i-lucide-user',
-  to: '/about'
+  to: '/profile'
 }]

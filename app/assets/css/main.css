@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "@nuxt/ui-pro";
+@import './theme.css';
 
 @source "../../../content/**/*";
 
@@ -8,19 +9,18 @@
   --font-serif: 'Instrument Serif', serif;
 }
 
+/* Contenedor principal */
 :root {
   --ui-container: var(--container-4xl);
-
-
-  ::selection {
-    color: #282a30;
-    background-color: #c8c8c8;
-  }
 }
 
-.dark {
-  ::selection {
-    color: #ffffff;
-    background-color: #474747;
-  }
+html,
+body,
+#__nuxt,
+#__layout {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-background);
 }
