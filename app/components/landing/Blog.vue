@@ -5,18 +5,18 @@ defineProps<{
   page: IndexCollectionItem
 }>()
 
-const { data: posts } = await useAsyncData('index-blogs', () =>
-  queryCollection('blog').order('date', 'DESC').limit(3).all()
+const { data: posts } = await useAsyncData('index-courses', () =>
+  queryCollection('courses').order('date', 'DESC').limit(3).all()
 )
 if (!posts.value) {
-  throw createError({ statusCode: 404, statusMessage: 'blogs posts not found', fatal: true })
+  throw createError({ statusCode: 404, statusMessage: 'Courses not found', fatal: true })
 }
 </script>
 
 <template>
   <UPageSection
-    :title="page.blog.title"
-    :description="page.blog.description"
+    :title="page.courses.title"
+    :description="page.courses.description"
     :ui="{
       container: 'px-0 !pt-0 sm:gap-6 lg:gap-8',
       title: 'text-left text-xl sm:text-xl lg:text-2xl font-medium',

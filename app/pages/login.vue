@@ -6,27 +6,33 @@
           <div class="illustration">
             <div class="people-group">
               <div class="person person-1">
-                <div class="person-body"></div>
-                <div class="person-head"></div>
+                <div class="person-body" />
+                <div class="person-head" />
               </div>
               <div class="person person-2">
-                <div class="person-body"></div>
-                <div class="person-head"></div>
-                <div class="tennis-racket"></div>
+                <div class="person-body" />
+                <div class="person-head" />
+                <div class="tennis-racket" />
               </div>
               <div class="person person-3">
-                <div class="person-body"></div>
-                <div class="person-head"></div>
+                <div class="person-body" />
+                <div class="person-head" />
               </div>
             </div>
             <div class="activities">
-              <div class="activity">Design</div>
-              <div class="activity">Tennis</div>
-              <div class="activity">Public speaking</div>
+              <div class="activity">
+                Design
+              </div>
+              <div class="activity">
+                Tennis
+              </div>
+              <div class="activity">
+                Public speaking
+              </div>
             </div>
           </div>
         </div>
-        
+
         <div class="brand-section">
           <div class="brand-logo">
             <span class="utp-text">UTP</span><span class="clubs-text">+clubs</span>
@@ -35,9 +41,12 @@
           <p>Únete a clubes universitarios</p>
         </div>
       </div>
-      
+
       <div class="login-form-section">
-        <form @submit.prevent="handleLogin" class="login-form">
+        <form
+          class="login-form"
+          @submit.prevent="handleLogin"
+        >
           <div class="form-group">
             <label for="codigo">Código UTP</label>
             <input
@@ -47,12 +56,15 @@
               placeholder="Ingresa tu usuario"
               :disabled="isLoading"
               required
-            />
-            <small v-if="form.codigo" class="helper-text">
+            >
+            <small
+              v-if="form.codigo"
+              class="helper-text"
+            >
               Ejemplo de usuario: U2013140 (no digital @utp.edu.pe)
             </small>
           </div>
-          
+
           <div class="form-group">
             <label for="password">Contraseña</label>
             <div class="password-input">
@@ -63,22 +75,25 @@
                 placeholder="Ingresa tu contraseña"
                 :disabled="isLoading"
                 required
-              />
+              >
               <button
                 type="button"
-                @click="showPassword = !showPassword"
                 class="password-toggle"
                 :disabled="isLoading"
+                @click="showPassword = !showPassword"
               >
                 <Icon :name="showPassword ? 'lucide:eye-off' : 'lucide:eye'" />
               </button>
             </div>
           </div>
-          
+
           <div class="forgot-password">
-            <a href="#" @click.prevent="">Restablecer contraseña</a>
+            <a
+              href="#"
+              @click.prevent=""
+            >Restablecer contraseña</a>
           </div>
-          
+
           <button
             type="submit"
             class="login-button"
@@ -87,18 +102,21 @@
             <span v-if="isLoading">Iniciando sesión...</span>
             <span v-else>Iniciar sesión</span>
           </button>
-          
-          <div v-if="errorMessage" class="error-message">
+
+          <div
+            v-if="errorMessage"
+            class="error-message"
+          >
             {{ errorMessage }}
           </div>
-          
+
           <!-- Botón de emergencia para limpiar datos -->
           <div class="emergency-section">
-            <button 
-              type="button" 
-              @click="clearDataAndReload"
+            <button
+              type="button"
               class="clear-data-button"
               title="Limpiar datos de la aplicación"
+              @click="clearDataAndReload"
             >
               🧹 Limpiar datos
             </button>
@@ -133,17 +151,17 @@ const clearDataAndReload = () => {
 
 const handleLogin = async () => {
   if (isLoading.value) return
-  
+
   isLoading.value = true
   errorMessage.value = ''
-  
+
   try {
     const success = await login(form)
-    
+
     if (success) {
       // Verificar si necesita hacer el assessment
       const { needsAssessment } = useAuth()
-      
+
       if (needsAssessment.value) {
         // Primera vez - redirigir al assessment
         await router.push('/assessment')
@@ -175,9 +193,7 @@ useSeoMeta({
 })
 
 // Sin layout - página independiente
-definePageMeta({
-  layout: false
-})
+definePageMeta({ layout: false })
 </script>
 
 <style scoped>
@@ -449,26 +465,26 @@ definePageMeta({
     grid-template-columns: 1fr;
     max-width: 400px;
   }
-  
+
   .login-header {
     padding: 2rem 1rem;
   }
-  
+
   .login-form-section {
     padding: 2rem 1rem;
   }
-  
+
   .people-group {
     transform: scale(0.8);
   }
-  
+
   .brand-section h2 {
     font-size: 1.25rem;
   }
-  
+
   .activities {
     gap: 1rem;
     font-size: 0.75rem;
   }
 }
-</style> 
+</style>

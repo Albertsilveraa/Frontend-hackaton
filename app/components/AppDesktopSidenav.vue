@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, inject } from 'vue'
+import { inject } from 'vue'
 import { NavPathEnum, useNavMenu } from '@/composables'
 import { Icon } from '#components'
 
@@ -7,7 +7,6 @@ const navMenu = useNavMenu()
 const colorMode = useColorMode()
 
 const isCollapsed = inject<Ref<boolean>>('isSidenavCollapsed')!
-const menuList = ref<HTMLUListElement | undefined>()
 const nextTheme = computed(() => (colorMode.value === 'dark' ? 'light' : 'dark'))
 
 const toggleSidebar = () => {
@@ -72,107 +71,179 @@ const startViewTransition = (event: MouseEvent) => {
       >
     </NuxtLink>
 
-    <ul
-      ref="menuList"
-      class="menu-list"
-    >
-      <li>
-        <NuxtLink
-          :to="NavPathEnum.home"
-          class="menu-link"
-          :class="{ collapsed: isCollapsed }"
-          @mouseover="navMenu.setHoveredItem(NavPathEnum.home)"
-          @mouseleave="navMenu.setHoveredItem(null)"
-        >
-          <IconHome :active="navMenu.itemIsActive(NavPathEnum.home)" />
-          <span class="menu-label">Home</span>
-        </NuxtLink>
-      </li>
-      <li>
-        <NuxtLink
-          :to="NavPathEnum.clubs"
-          class="menu-link"
-          :class="{ collapsed: isCollapsed }"
-          @mouseover="navMenu.setHoveredItem(NavPathEnum.clubs)"
-          @mouseleave="navMenu.setHoveredItem(null)"
-        >
-          <IconClubs :active="navMenu.itemIsActive(NavPathEnum.clubs)" />
-          <span class="menu-label">Clubs</span>
-        </NuxtLink>
-      </li>
-      <li>
-        <NuxtLink
-          :to="NavPathEnum.berles"
-          class="menu-link"
-          :class="{ collapsed: isCollapsed }"
-          @mouseover="navMenu.setHoveredItem(NavPathEnum.berles)"
-          @mouseleave="navMenu.setHoveredItem(null)"
-        >
-          <IconBerles :active="navMenu.itemIsActive(NavPathEnum.berles)" />
-          <span class="menu-label">Berles</span>
-        </NuxtLink>
-      </li>
-      <li>
-        <NuxtLink
-          :to="NavPathEnum.habilidadesClub"
-          class="menu-link"
-          :class="{ collapsed: isCollapsed }"
-          @mouseover="navMenu.setHoveredItem(NavPathEnum.habilidadesClub)"
-          @mouseleave="navMenu.setHoveredItem(null)"
-        >
-          <Icon
-            name="lucide:trophy"
-            class="item-icon"
-          />
-          <span class="menu-label">Habilidades</span>
-        </NuxtLink>
-      </li>
-      <li>
-        <NuxtLink
-          :to="NavPathEnum.profile"
-          class="menu-link"
-          :class="{ collapsed: isCollapsed }"
-          @mouseover="navMenu.setHoveredItem(NavPathEnum.profile)"
-          @mouseleave="navMenu.setHoveredItem(null)"
-        >
-          <Icon
-            name="heroicons-outline:user"
-            class="item-icon"
-          />
-          <span class="menu-label">Perfil</span>
-        </NuxtLink>
-      </li>
-      <li>
-        <button
-          class="menu-link p-0"
-          :class="{ collapsed: isCollapsed }"
-          @click="startViewTransition"
-        >
-          <Icon
-            :name="`i-lucide-${nextTheme === 'dark' ? 'sun' : 'moon'}`"
-            class="item-icon"
-          />
-          <span class="menu-label">
-            {{ nextTheme === 'dark' ? 'Dark' : 'Light' }}
-          </span>
-        </button>
-      </li>
-      <li>
-        <button
-          class="menu-link p-0 bg-transparent hover:bg-transparent active:bg-transparent focus:bg-transparent border-none text-inherit hover:text-inherit"
-          :class="{ collapsed: isCollapsed }"
-          @click="toggleSidebar"
-        >
-          <Icon
-            :name="isCollapsed ? 'i-heroicons-chevron-double-right' : 'i-heroicons-chevron-double-left'"
-            class="item-icon"
-          />
-          <span class="menu-label">
-            {{ isCollapsed ? 'Expandir' : 'Colapsar' }}
-          </span>
-        </button>
-      </li>
-    </ul>
+    <section class="nav-section">
+      <template v-if="isCollapsed">
+        <hr>
+      </template>
+      <template v-else>
+        <p class="font-medium">
+          General
+        </p>
+      </template>
+      <ul class="menu-list">
+        <li>
+          <NuxtLink
+            :to="NavPathEnum.home"
+            class="menu-link"
+            :class="{ collapsed: isCollapsed }"
+            @mouseover="navMenu.setHoveredItem(NavPathEnum.home)"
+            @mouseleave="navMenu.setHoveredItem(null)"
+          >
+            <Icon
+              name="i-lucide-layout-dashboard"
+              class="item-icon"
+            />
+            <span
+              v-if="!isCollapsed"
+              class="menu-label"
+            >
+              Inicio
+            </span>
+          </NuxtLink>
+        </li>
+        <li>
+          <NuxtLink
+            :to="NavPathEnum.courses"
+            class="menu-link"
+            :class="{ collapsed: isCollapsed }"
+            @mouseover="navMenu.setHoveredItem(NavPathEnum.courses)"
+            @mouseleave="navMenu.setHoveredItem(null)"
+          >
+            <Icon
+              name="i-lucide-book-open"
+              class="item-icon"
+            />
+            <span
+              v-if="!isCollapsed"
+              class="menu-label"
+            >
+              Cursos
+            </span>
+          </NuxtLink>
+        </li>
+        <li>
+          <NuxtLink
+            :to="NavPathEnum.clubs"
+            class="menu-link"
+            :class="{ collapsed: isCollapsed }"
+            @mouseover="navMenu.setHoveredItem(NavPathEnum.clubs)"
+            @mouseleave="navMenu.setHoveredItem(null)"
+          >
+            <Icon
+              name="i-lucide-users"
+              class="item-icon"
+            />
+            <span
+              v-if="!isCollapsed"
+              class="menu-label"
+            >
+              Clubs
+            </span>
+          </NuxtLink>
+        </li>
+      </ul>
+    </section>
+    <section class="nav-section">
+      <template v-if="isCollapsed">
+        <hr>
+      </template>
+      <template v-else>
+        <p class="font-medium">
+          Otros
+        </p>
+      </template>
+      <ul class="menu-list">
+        <li>
+          <NuxtLink
+            :to="NavPathEnum.berles"
+            class="menu-link"
+            :class="{ collapsed: isCollapsed }"
+            @mouseover="navMenu.setHoveredItem(NavPathEnum.berles)"
+            @mouseleave="navMenu.setHoveredItem(null)"
+          >
+            <Icon
+              name="i-mdi-message-text-outline"
+              class="item-icon"
+            />
+            <span
+              v-if="!isCollapsed"
+              class="menu-label"
+            >
+              Berles
+            </span>
+          </NuxtLink>
+        </li>
+        <li>
+          <NuxtLink
+            :to="NavPathEnum.profile"
+            class="menu-link"
+            :class="{ collapsed: isCollapsed }"
+            @mouseover="navMenu.setHoveredItem(NavPathEnum.profile)"
+            @mouseleave="navMenu.setHoveredItem(null)"
+          >
+            <Icon
+              name="i-heroicons-outline-user-circle"
+              class="item-icon"
+            />
+            <span
+              v-if="!isCollapsed"
+              class="menu-label"
+            >
+              Perfil
+            </span>
+          </NuxtLink>
+        </li>
+      </ul>
+    </section>
+
+    <section class="nav-section">
+      <template v-if="isCollapsed">
+        <hr>
+      </template>
+      <template v-else>
+        <p class="font-medium">
+          Ajustes
+        </p>
+      </template>
+      <ul class="menu-list">
+        <li>
+          <button
+            class="menu-link p-0"
+            :class="{ collapsed: isCollapsed }"
+            @click="startViewTransition"
+          >
+            <Icon
+              :name="`i-lucide-${nextTheme === 'dark' ? 'sun' : 'moon'}`"
+              class="item-icon"
+            />
+            <span
+              v-if="!isCollapsed"
+              class="menu-label"
+            >
+              {{ nextTheme === 'dark' ? 'Dark' : 'Light' }}
+            </span>
+          </button>
+        </li>
+        <li>
+          <button
+            class="menu-link p-0 bg-transparent hover:bg-transparent active:bg-transparent focus:bg-transparent border-none text-inherit hover:text-inherit"
+            :class="{ collapsed: isCollapsed }"
+            @click="toggleSidebar"
+          >
+            <Icon
+              :name="isCollapsed ? 'i-heroicons-chevron-double-right' : 'i-heroicons-chevron-double-left'"
+              class="item-icon"
+            />
+            <span
+              v-if="!isCollapsed"
+              class="menu-label"
+            >
+              {{ isCollapsed ? 'Expandir' : 'Colapsar' }}
+            </span>
+          </button>
+        </li>
+      </ul>
+    </section>
   </nav>
 </template>
 
@@ -180,13 +251,13 @@ const startViewTransition = (event: MouseEvent) => {
 .sidenav {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 15px;
   align-items: center;
   height: 100%;
   padding: 24px 0;
   background-color: var(--color-sidebar-bg);
   color: var(--color-sidebar-tx);
-  width: 239px;
+  max-width: 239px;
   transition: width 300ms ease, padding 300ms ease;
 }
 
@@ -196,42 +267,49 @@ const startViewTransition = (event: MouseEvent) => {
 
 .logo-link {
   display: block;
+  margin-bottom: 15px;
+}
+
+.nav-section {
+  width: 60%;
 }
 
 .menu-list {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  padding: 0;
-  margin: 50px 0 0;
-  list-style: none;
+  gap: 5px;
+  margin-top: 5px;
 }
 
 .menu-link {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   width: 100%;
+  padding: 5px 12%;
 }
 
 .menu-link.collapsed {
-  flex-direction: column;
-  gap: 2px;
   justify-content: center;
+}
+
+.menu-link:hover {
+  background-color: var(--color-sidebar-hover);
+  border-radius: 4px;
+  color: var(--color-sidebar-bg);
 }
 
 .menu-label {
   white-space: nowrap;
 }
 
-.menu-link.collapsed .menu-label {
-  text-align: center;
-  font-size: 14px;
+.item-icon {
+  width: 20px;
+  height: 20px;
 }
 
-.item-icon {
+.collapsed > .item-icon {
   width: 25px;
   height: 25px;
 }

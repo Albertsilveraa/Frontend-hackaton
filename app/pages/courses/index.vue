@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const { data: page } = await useAsyncData('blog-page', () => {
-  return queryCollection('pages').path('/blog').first()
+const { data: page } = await useAsyncData('courses-page', () => {
+  return queryCollection('pages').path('/courses').first()
 })
 if (!page.value) {
   throw createError({
@@ -9,13 +9,13 @@ if (!page.value) {
     fatal: true
   })
 }
-const { data: posts } = await useAsyncData('blogs', () =>
-  queryCollection('blog').order('date', 'DESC').all()
+const { data: posts } = await useAsyncData('courses', () =>
+  queryCollection('courses').order('date', 'DESC').all()
 )
 if (!posts.value) {
   throw createError({
     statusCode: 404,
-    statusMessage: 'blogs posts not found',
+    statusMessage: 'Courses not found',
     fatal: true
   })
 }
@@ -26,6 +26,8 @@ useSeoMeta({
   description: page.value?.seo?.description || page.value?.description,
   ogDescription: page.value?.seo?.description || page.value?.description
 })
+
+definePageMeta({ middleware: 'auth', layout: 'dashboard' })
 </script>
 
 <template>
@@ -55,18 +57,13 @@ useSeoMeta({
           :in-view-options="{ once: true }"
         >
           <UBlogPost
-            variant="naked"
+            variant="outline"
             orientation="horizontal"
             :to="post.path"
             v-bind="post"
             :ui="{
               root: 'md:grid md:grid-cols-2 group overflow-visible transition-all duration-300',
-              image:
-                'group-hover/blog-post:scale-105 rounded-lg shadow-lg border-4 border-muted ring-2 ring-default',
-              header:
-                index % 2 === 0
-                  ? 'sm:-rotate-1 overflow-visible'
-                  : 'sm:rotate-1 overflow-visible'
+              image: 'group-hover/blog-post:scale-90'
             }"
           />
         </Motion>

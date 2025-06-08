@@ -81,7 +81,7 @@ provide('isSidenavCollapsed', isCollapsed)
     border-radius: 16px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
     transition: width 300ms ease, left 300ms ease;
-    overflow: hidden;
+    overflow: auto;
     z-index: 50;
   }
 

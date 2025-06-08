@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "@nuxt/ui-pro";
 @import './theme.css';
+@import './base.css';
 
 @source "../../../content/**/*";
 
@@ -12,15 +13,4 @@
 /* Contenedor principal */
 :root {
   --ui-container: var(--container-4xl);
-}
-
-html,
-body,
-#__nuxt,
-#__layout {
-  height: 100%;
-}
-
-body {
-  background-color: var(--color-background);
 }

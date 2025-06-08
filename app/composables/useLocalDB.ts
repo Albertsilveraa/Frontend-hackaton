@@ -24,7 +24,7 @@ export const useLocalDB = () => {
 
   // Inicializar DB
   const initDB = () => {
-    if (process.client) {
+    if (import.meta.client) {
       if (!localStorage.getItem(DB_KEYS.USERS)) {
         localStorage.setItem(DB_KEYS.USERS, JSON.stringify({}))
       }
@@ -36,7 +36,7 @@ export const useLocalDB = () => {
 
   // Obtener todos los usuarios
   const getUsers = (): Record<string, User> => {
-    if (!process.client) return {}
+    if (!import.meta.client) return {}
     const users = localStorage.getItem(DB_KEYS.USERS)
     return users ? JSON.parse(users) : {}
   }
@@ -51,7 +51,7 @@ export const useLocalDB = () => {
   const saveUser = (codigo: string, data: Partial<User>): User => {
     const users = getUsers()
     const existingUser = getUserByCodigo(codigo)
-    
+
     const user: User = {
       id: existingUser?.id || `user_${Date.now()}`,
       codigo,
@@ -62,20 +62,20 @@ export const useLocalDB = () => {
     }
 
     users[user.id] = user
-    
-    if (process.client) {
+
+    if (import.meta.client) {
       localStorage.setItem(DB_KEYS.USERS, JSON.stringify(users))
     }
-    
+
     return user
   }
 
   // Guardar resultado de assessment
   const saveAssessment = (userId: string, answers: number[], learningPath: any): AssessmentResult => {
-    if (!process.client) throw new Error('No se puede guardar en el servidor')
-    
+    if (!import.meta.client) throw new Error('No se puede guardar en el servidor')
+
     const assessments = JSON.parse(localStorage.getItem(DB_KEYS.ASSESSMENTS) || '{}')
-    
+
     const assessment: AssessmentResult = {
       id: `assessment_${Date.now()}`,
       userId,
@@ -103,10 +103,10 @@ export const useLocalDB = () => {
 
   // Obtener assessment de usuario
   const getUserAssessment = (userId: string): AssessmentResult | null => {
-    if (!process.client) return null
-    
+    if (!import.meta.client) return null
+
     const assessments = JSON.parse(localStorage.getItem(DB_KEYS.ASSESSMENTS) || '{}')
-    return Object.values(assessments).find((a: any) => a.userId === userId) || null
+    return Object.values(assessments).find((a: any) => a.userId === userId) as AssessmentResult || null
   }
 
   // Login
@@ -117,14 +117,14 @@ export const useLocalDB = () => {
     }
 
     initDB()
-    
+
     let user = getUserByCodigo(codigo)
     if (!user) {
       user = saveUser(codigo, { hasCompletedAssessment: false })
     }
 
     // Guardar usuario actual
-    if (process.client) {
+    if (import.meta.client) {
       localStorage.setItem(DB_KEYS.CURRENT_USER, user.id)
     }
 
@@ -133,8 +133,8 @@ export const useLocalDB = () => {
 
   // Obtener usuario actual
   const getCurrentUser = (): User | null => {
-    if (!process.client) return null
-    
+    if (!import.meta.client) return null
+
     const currentUserId = localStorage.getItem(DB_KEYS.CURRENT_USER)
     if (!currentUserId) return null
 
@@ -144,15 +144,15 @@ export const useLocalDB = () => {
 
   // Logout
   const logout = () => {
-    if (process.client) {
+    if (import.meta.client) {
       localStorage.removeItem(DB_KEYS.CURRENT_USER)
     }
   }
 
   // Limpiar toda la DB
   const clearDB = () => {
-    if (process.client) {
-      Object.values(DB_KEYS).forEach(key => {
+    if (import.meta.client) {
+      Object.values(DB_KEYS).forEach((key) => {
         localStorage.removeItem(key)
       })
     }
@@ -168,4 +168,4 @@ export const useLocalDB = () => {
     getUserAssessment,
     clearDB
   }
-} 
+}
