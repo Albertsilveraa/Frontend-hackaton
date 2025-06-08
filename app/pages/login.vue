@@ -159,16 +159,7 @@ const handleLogin = async () => {
     const success = await login(form)
 
     if (success) {
-      // Verificar si necesita hacer el assessment
-      const { needsAssessment } = useAuth()
-
-      if (needsAssessment.value) {
-        // Primera vez - redirigir al assessment
-        await router.push('/assessment')
-      } else {
-        // Ya completó el assessment - ir al home
-        await router.push('/')
-      }
+      router.push('/assessment')
     } else {
       errorMessage.value = 'Código UTP o contraseña incorrectos'
     }
