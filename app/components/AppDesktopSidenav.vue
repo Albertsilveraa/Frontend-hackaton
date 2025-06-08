@@ -51,6 +51,22 @@ const startViewTransition = (event: MouseEvent) => {
     )
   })
 }
+
+const getSidebarLogo = () => {
+  if (colorMode.value === 'dark') {
+    return isCollapsed.value
+      ? 'https://i.ibb.co/9Hr4nGTS/utp-logo-white-for-dark.png' // dark, collapsed
+      : 'https://i.ibb.co/zVhxmF4P/utp-clubs-darkmode.png' // dark, expanded
+  } else if (colorMode.value === 'light') {
+    return isCollapsed.value
+      ? 'https://i.ibb.co/Fqw0fngs/utp-logo-transparent.png' // light, collapsed
+      : 'https://i.ibb.co/9mqj8QCH/clubs-removebg-preview-1.png' // light, expanded
+  } else {
+    return isCollapsed.value
+      ? 'https://i.ibb.co/9Hr4nGTS/utp-logo-white-for-dark.png' // dark, collapsed
+      : 'https://i.ibb.co/zVhxmF4P/utp-clubs-darkmode.png' // dark, expanded
+  }
+}
 </script>
 
 <template>
@@ -63,9 +79,7 @@ const startViewTransition = (event: MouseEvent) => {
       class="logo-link"
     >
       <img
-        :src="isCollapsed
-          ? 'https://i.ibb.co/9Hr4nGTS/utp-logo-white-for-dark.png'
-          : 'https://i.ibb.co/zVhxmF4P/utp-clubs-darkmode.png'"
+        :src="getSidebarLogo()"
         :width="isCollapsed ? 50 : 150"
         class="logo"
       >
