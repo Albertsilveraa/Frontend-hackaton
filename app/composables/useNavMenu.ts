@@ -5,6 +5,7 @@ export enum NavPathEnum {
   home = '/',
   clubs = '/clubs',
   berles = '/berles',
+  habilidadesClub = '/habilidades-club',
   profile = '/profile'
 }
 

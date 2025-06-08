@@ -36,6 +36,18 @@ const navMenu = useNavMenu()
           <IconBerles :active="navMenu.itemIsActive(NavPathEnum.berles)" />
         </NuxtLink>
       </li>
+      <li>
+        <NuxtLink
+          :to="NavPathEnum.habilidadesClub"
+          @mouseover="navMenu.setHoveredItem(NavPathEnum.habilidadesClub)"
+          @mouseleave="navMenu.setHoveredItem(null)"
+        >
+          <Icon
+            name="lucide:trophy"
+            class="item-icon text-xl"
+          />
+        </NuxtLink>
+      </li>
     </ul>
   </nav>
 </template>

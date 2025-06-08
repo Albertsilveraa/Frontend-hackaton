@@ -22,6 +22,22 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2024-11-01',
 
+  // Configuración de runtime para incluir variables de ElevenLabs
+  runtimeConfig: {
+    // Variables privadas del servidor
+    openaiApiKey: process.env.OPENAI_API_KEY,
+    qdrantUrl: process.env.QDRANT_URL || 'http://localhost:6333',
+    collectionName: process.env.COLLECTION_NAME || 'material_educativo',
+    assistantId: process.env.ASSISTANT_ID,
+    elevenLabsApiKey: process.env.ELEVENLABS_API_KEY,
+    
+    // Variables públicas del cliente (accesibles desde el frontend)
+    public: {
+      ELEVENLABS_AGENT_ID: process.env.ELEVENLABS_AGENT_ID,
+      ELEVENLABS_API_KEY: process.env.ELEVENLABS_API_KEY
+    }
+  },
+
   nitro: {
     prerender: {
       routes: [

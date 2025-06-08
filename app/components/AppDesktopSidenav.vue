@@ -114,6 +114,21 @@ const startViewTransition = (event: MouseEvent) => {
       </li>
       <li>
         <NuxtLink
+          :to="NavPathEnum.habilidadesClub"
+          class="menu-link"
+          :class="{ collapsed: isCollapsed }"
+          @mouseover="navMenu.setHoveredItem(NavPathEnum.habilidadesClub)"
+          @mouseleave="navMenu.setHoveredItem(null)"
+        >
+          <Icon
+            name="lucide:trophy"
+            class="item-icon"
+          />
+          <span class="menu-label">Habilidades</span>
+        </NuxtLink>
+      </li>
+      <li>
+        <NuxtLink
           :to="NavPathEnum.profile"
           class="menu-link"
           :class="{ collapsed: isCollapsed }"
