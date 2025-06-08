@@ -13,7 +13,22 @@ const navMenu = useNavMenu()
           @mouseover="navMenu.setHoveredItem(NavPathEnum.home)"
           @mouseleave="navMenu.setHoveredItem(null)"
         >
-          <IconHome :active="navMenu.itemIsActive(NavPathEnum.home)" />
+          <Icon
+            name="i-lucide-layout-dashboard"
+            class="item-icon"
+          />
+        </NuxtLink>
+      </li>
+      <li>
+        <NuxtLink
+          :to="NavPathEnum.courses"
+          @mouseover="navMenu.setHoveredItem(NavPathEnum.courses)"
+          @mouseleave="navMenu.setHoveredItem(null)"
+        >
+          <Icon
+            name="i-lucide-book-open"
+            class="item-icon"
+          />
         </NuxtLink>
       </li>
       <li>
@@ -22,8 +37,9 @@ const navMenu = useNavMenu()
           @mouseover="navMenu.setHoveredItem(NavPathEnum.clubs)"
           @mouseleave="navMenu.setHoveredItem(null)"
         >
-          <IconClubs
-            :active="navMenu.itemIsActive(NavPathEnum.clubs)"
+          <Icon
+            name="i-lucide-users"
+            class="item-icon"
           />
         </NuxtLink>
       </li>
@@ -33,18 +49,21 @@ const navMenu = useNavMenu()
           @mouseover="navMenu.setHoveredItem(NavPathEnum.berles)"
           @mouseleave="navMenu.setHoveredItem(null)"
         >
-          <IconBerles :active="navMenu.itemIsActive(NavPathEnum.berles)" />
+          <Icon
+            name="i-mdi-message-text-outline"
+            class="item-icon"
+          />
         </NuxtLink>
       </li>
       <li>
         <NuxtLink
-          :to="NavPathEnum.habilidadesClub"
-          @mouseover="navMenu.setHoveredItem(NavPathEnum.habilidadesClub)"
+          :to="NavPathEnum.profile"
+          @mouseover="navMenu.setHoveredItem(NavPathEnum.profile)"
           @mouseleave="navMenu.setHoveredItem(null)"
         >
           <Icon
-            name="lucide:trophy"
-            class="item-icon text-xl"
+            name="i-heroicons-outline-user-circle"
+            class="item-icon"
           />
         </NuxtLink>
       </li>
@@ -67,5 +86,10 @@ const navMenu = useNavMenu()
   justify-content: space-around;
   gap: 10px;
   height: 100%;
+}
+
+.item-icon {
+  width: 25px;
+  height: 25px;
 }
 </style>

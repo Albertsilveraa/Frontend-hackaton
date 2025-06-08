@@ -19,7 +19,7 @@ useSeoMeta({
   ogDescription: page.value?.seo?.description || page.value?.description
 })
 
-definePageMeta({ layout: 'dashboard' })
+definePageMeta({ middleware: 'auth', layout: 'dashboard' })
 </script>
 
 <template>

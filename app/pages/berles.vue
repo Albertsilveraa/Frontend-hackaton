@@ -1,131 +1,9 @@
-<template>
-  <div class="berles-container">
-    <!-- Header con usuario y logout -->
-    <div class="chat-header">
-      <div class="header-content">
-        <div class="user-info">
-          <h1>🎓 Berles - Asistente Educacional</h1>
-          <p>Pregunta sobre estudios y obtén respuestas personalizadas</p>
-        </div>
-        <div class="user-actions">
-          <div class="user-badge">
-            <Icon name="lucide:user" />
-            <span>{{ user?.codigo }}</span>
-          </div>
-          <button @click="handleLogout" class="logout-button">
-            <Icon name="lucide:log-out" />
-            Salir
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tabs para alternar entre modos -->
-    <div class="mode-tabs">
-      <button 
-        :class="['tab', { active: currentMode === 'text' }]"
-        @click="currentMode = 'text'"
-      >
-        <Icon name="lucide:message-circle" />
-        Chat de Texto
-      </button>
-      <button 
-        :class="['tab', { active: currentMode === 'voice' }]"
-        @click="currentMode = 'voice'"
-      >
-        <Icon name="lucide:mic" />
-        Conversación de Voz
-      </button>
-    </div>
-    
-    <!-- Modo Texto -->
-    <div v-if="currentMode === 'text'" class="chat-container">
-      <div class="messages-container" ref="messagesContainer">
-        <div 
-          v-for="(message, index) in messages" 
-          :key="index"
-          :class="['message', message.from === 'user' ? 'user-message' : 'bot-message']"
-        >
-          <div class="message-content">
-            <div class="message-text" v-html="formatMessage(message.text)"></div>
-            <div class="message-time">{{ formatTime(message.timestamp) }}</div>
-          </div>
-        </div>
-        
-        <div v-if="isLoading" class="message bot-message">
-          <div class="message-content">
-            <div class="message-text">
-              <div class="typing-indicator">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="input-container">
-        <div class="input-wrapper">
-          <input
-            v-model="currentMessage"
-            @keyup.enter="sendMessage"
-            :disabled="isLoading"
-            placeholder="Escribe tu pregunta sobre estudios..."
-            class="message-input"
-          />
-          <button 
-            @click="sendMessage"
-            :disabled="isLoading || !currentMessage.trim()"
-            class="send-button"
-          >
-            <Icon name="lucide:send" />
-          </button>
-        </div>
-        <div class="api-status">
-          <span class="status-indicator online"></span>
-          API REST activa
-        </div>
-      </div>
-    </div>
-
-    <!-- Modo Voz -->
-    <div v-else class="voice-container">
-      <div class="voice-header">
-        <h2>🎤 Conversación de Voz con Berles</h2>
-        <p>Habla directamente con tu asistente educacional usando IA conversacional</p>
-      </div>
-      
-      <VoiceDisc />
-      
-      <div class="voice-info">
-        <div class="info-card">
-          <Icon name="lucide:zap" />
-          <h3>Conversación Natural</h3>
-          <p>Habla de forma natural como si fuera una conversación real</p>
-        </div>
-        <div class="info-card">
-          <Icon name="lucide:brain" />
-          <h3>IA Avanzada</h3>
-          <p>Powered by ElevenLabs para una experiencia conversacional única</p>
-        </div>
-        <div class="info-card">
-          <Icon name="lucide:graduation-cap" />
-          <h3>Especializado en Educación</h3>
-          <p>Optimizado para consultas académicas y consejos de estudio</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import VoiceDisc from '~/components/berles/VoiceDisc.vue'
+import VoiceDisc from '@/components/berles/VoiceDisc.vue'
+import { useAuth } from '@/composables'
 
 // Middleware de autenticación
-definePageMeta({
-  middleware: 'auth'
-})
+definePageMeta({ middleware: 'auth', layout: 'dashboard' })
 
 interface ChatMessage {
   text: string
@@ -143,14 +21,14 @@ const currentMode = ref<'text' | 'voice'>('text')
 onMounted(() => {
   // Mensaje de bienvenida solo para modo texto
   if (currentMode.value === 'text') {
-    addMessage("🎓 Bienvenido a Berles. Pregunta sobre estudios y obtén respuestas personalizadas usando IA.", 'bot')
+    addMessage('🎓 Bienvenido a Berles. Pregunta sobre estudios y obtén respuestas personalizadas usando IA.', 'bot')
   }
 })
 
 // Watcher para el cambio de modo
 watch(currentMode, (newMode) => {
   if (newMode === 'text' && messages.value.length === 0) {
-    addMessage("🎓 Bienvenido a Berles. Pregunta sobre estudios y obtén respuestas personalizadas usando IA.", 'bot')
+    addMessage('🎓 Bienvenido a Berles. Pregunta sobre estudios y obtén respuestas personalizadas usando IA.', 'bot')
   }
 })
 
@@ -158,12 +36,12 @@ const sendMessage = async () => {
   if (!currentMessage.value.trim() || isLoading.value) {
     return
   }
-  
+
   const message = currentMessage.value.trim()
   addMessage(message, 'user')
   currentMessage.value = ''
   isLoading.value = true
-  
+
   try {
     // Llamar a la API REST
     const { data } = await $fetch('/api/rag-agent', {
@@ -172,25 +50,24 @@ const sendMessage = async () => {
         query: message,
         userId: user.value?.codigo || 'anonymous'
       }
-    })
-    
+    }) as any
+
     if (data?.response) {
       addMessage(data.response, 'bot')
     } else {
       addMessage('❌ No se pudo obtener una respuesta válida.', 'bot')
     }
-    
   } catch (error) {
     console.error('Error enviando mensaje:', error)
-    
+
     // Respuesta de fallback si hay error
     let fallbackResponse = ''
-    
+
     if (message.toLowerCase().includes('estudio') || message.toLowerCase().includes('estudiar')) {
       fallbackResponse = `📚 **Consejos de estudio efectivo:**
 
 • **Planifica tu tiempo**: Crea un horario de estudio realista
-• **Ambiente adecuado**: Busca un lugar tranquilo y bien iluminado  
+• **Ambiente adecuado**: Busca un lugar tranquilo y bien iluminado
 • **Técnica Pomodoro**: 25 min de estudio + 5 min de descanso
 • **Resúmenes activos**: Escribe con tus propias palabras
 • **Mapas mentales**: Organiza la información visualmente
@@ -229,18 +106,18 @@ const sendMessage = async () => {
 
 ¡Tú puedes! 💪`
     } else {
-      fallbackResponse = `🤖 Disculpa, estoy teniendo problemas técnicos temporales. 
+      fallbackResponse = `🤖 Disculpa, estoy teniendo problemas técnicos temporales.
 
 **Mientras tanto, aquí tienes algunos recursos útiles:**
 
 • **Técnicas de estudio**: Pomodoro, mapas mentales, resúmenes
 • **Organización**: Calendarios, listas de tareas, planificación
-• **Motivación**: Metas claras, recompensas, grupos de estudio  
+• **Motivación**: Metas claras, recompensas, grupos de estudio
 • **Bienestar**: Descanso, ejercicio, alimentación saludable
 
 ¿Hay algún tema específico sobre estudios en el que pueda ayudarte?`
     }
-    
+
     addMessage(fallbackResponse, 'bot')
   } finally {
     isLoading.value = false
@@ -253,7 +130,7 @@ const addMessage = (text: string, from: 'user' | 'bot') => {
     from,
     timestamp: new Date()
   })
-  
+
   nextTick(() => {
     scrollToBottom()
   })
@@ -292,6 +169,147 @@ useSeoMeta({
   description: 'Interactúa con nuestro agente educacional impulsado por IA para obtener respuestas personalizadas sobre estudios.'
 })
 </script>
+
+<template>
+  <div class="berles-container">
+    <!-- Header con usuario y logout -->
+    <div class="chat-header">
+      <div class="header-content">
+        <div class="user-info">
+          <h1>🎓 Berles - Asistente Educacional</h1>
+          <p>Pregunta sobre estudios y obtén respuestas personalizadas</p>
+        </div>
+        <div class="user-actions">
+          <div class="user-badge">
+            <Icon name="lucide:user" />
+            <span>{{ user?.codigo }}</span>
+          </div>
+          <button
+            class="logout-button"
+            @click="handleLogout"
+          >
+            <Icon name="lucide:log-out" />
+            Salir
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs para alternar entre modos -->
+    <div class="mode-tabs">
+      <button
+        :class="['tab', { active: currentMode === 'text' }]"
+        @click="currentMode = 'text'"
+      >
+        <Icon name="lucide:message-circle" />
+        Chat de Texto
+      </button>
+      <button
+        :class="['tab', { active: currentMode === 'voice' }]"
+        @click="currentMode = 'voice'"
+      >
+        <Icon name="lucide:mic" />
+        Conversación de Voz
+      </button>
+    </div>
+
+    <!-- Modo Texto -->
+    <div
+      v-if="currentMode === 'text'"
+      class="chat-container"
+    >
+      <div
+        ref="messagesContainer"
+        class="messages-container"
+      >
+        <div
+          v-for="(message, index) in messages"
+          :key="index"
+          :class="['message', message.from === 'user' ? 'user-message' : 'bot-message']"
+        >
+          <div class="message-content">
+            <div
+              class="message-text"
+              v-html="formatMessage(message.text)"
+            />
+            <div class="message-time">
+              {{ formatTime(message.timestamp) }}
+            </div>
+          </div>
+        </div>
+
+        <div
+          v-if="isLoading"
+          class="message bot-message"
+        >
+          <div class="message-content">
+            <div class="message-text">
+              <div class="typing-indicator">
+                <span />
+                <span />
+                <span />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-container">
+        <div class="input-wrapper">
+          <input
+            v-model="currentMessage"
+            :disabled="isLoading"
+            placeholder="Escribe tu pregunta sobre estudios..."
+            class="message-input"
+            @keyup.enter="sendMessage"
+          >
+          <button
+            :disabled="isLoading || !currentMessage.trim()"
+            class="send-button"
+            @click="sendMessage"
+          >
+            <Icon name="lucide:send" />
+          </button>
+        </div>
+        <div class="api-status">
+          <span class="status-indicator online" />
+          API REST activa
+        </div>
+      </div>
+    </div>
+
+    <!-- Modo Voz -->
+    <div
+      v-else
+      class="voice-container"
+    >
+      <div class="voice-header">
+        <h2>🎤 Conversación de Voz con Berles</h2>
+        <p>Habla directamente con tu asistente educacional usando IA conversacional</p>
+      </div>
+
+      <VoiceDisc />
+
+      <div class="voice-info">
+        <div class="info-card">
+          <Icon name="lucide:zap" />
+          <h3>Conversación Natural</h3>
+          <p>Habla de forma natural como si fuera una conversación real</p>
+        </div>
+        <div class="info-card">
+          <Icon name="lucide:brain" />
+          <h3>IA Avanzada</h3>
+          <p>Powered by ElevenLabs para una experiencia conversacional única</p>
+        </div>
+        <div class="info-card">
+          <Icon name="lucide:graduation-cap" />
+          <h3>Especializado en Educación</h3>
+          <p>Optimizado para consultas académicas y consejos de estudio</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .berles-container {
@@ -636,29 +654,29 @@ useSeoMeta({
     padding: 0.5rem;
     height: 100vh;
   }
-  
+
   .header-content {
     flex-direction: column;
     text-align: center;
     gap: 1rem;
   }
-  
+
   .user-info h1 {
     font-size: 1.5rem;
   }
-  
+
   .user-actions {
     justify-content: center;
   }
-  
+
   .message-content {
     max-width: 85%;
   }
-  
+
   .input-wrapper {
     flex-direction: column;
   }
-  
+
   .send-button {
     align-self: flex-end;
     width: auto;
@@ -673,4 +691,4 @@ useSeoMeta({
     flex-direction: column;
   }
 }
-</style> 
+</style>

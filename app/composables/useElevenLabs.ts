@@ -16,7 +16,7 @@ export interface ConversationState {
 
 export const useElevenLabs = () => {
   const config = useRuntimeConfig()
-  
+
   // Estado reactivo
   const state = reactive<ConversationState>({
     isConnected: false,
@@ -38,7 +38,7 @@ export const useElevenLabs = () => {
 
   // Configuración de ElevenLabs (solo verificamos que existan las variables)
   const elevenLabsConfig: ElevenLabsConfig = {
-    agentId: config.public.ELEVENLABS_AGENT_ID || '',
+    agentId: config.public.ELEVENLABS_AGENT_ID as string || '',
     hasApiKey: !!(config.public.ELEVENLABS_API_KEY || process.env.ELEVENLABS_API_KEY)
   }
 
@@ -52,7 +52,7 @@ export const useElevenLabs = () => {
     if (!audioContext.value) {
       audioContext.value = new (window.AudioContext || (window as any).webkitAudioContext)()
     }
-    
+
     if (audioContext.value.state === 'suspended') {
       await audioContext.value.resume()
     }
@@ -61,7 +61,7 @@ export const useElevenLabs = () => {
   // Obtener URL firmada del servidor
   const getSignedUrl = async (): Promise<string> => {
     try {
-      const response = await $fetch('/api/elevenlabs/signed-url')
+      const response: any = await $fetch('/api/elevenlabs/signed-url')
       return response.signedUrl
     } catch (error) {
       console.error('Error obteniendo URL firmada:', error)
@@ -85,19 +85,19 @@ export const useElevenLabs = () => {
 
       // Obtener URL firmada para mayor seguridad
       const wsUrl = await getSignedUrl()
-      
+
       websocket.value = new WebSocket(wsUrl)
-      
+
       websocket.value.onopen = () => {
         console.log('🎤 Conectado a ElevenLabs')
         state.isConnected = true
         state.isLoading = false
-        
+
         // Enviar configuración inicial más simple según la documentación
         const initMessage = {
-          type: "conversation_initiation_client_data"
+          type: 'conversation_initiation_client_data'
         }
-        
+
         console.log('📤 Enviando configuración inicial:', initMessage)
         websocket.value?.send(JSON.stringify(initMessage))
       }
@@ -139,26 +139,26 @@ export const useElevenLabs = () => {
   const handleWebSocketMessage = (event: MessageEvent) => {
     try {
       const data = JSON.parse(event.data)
-      
+
       switch (data.type) {
         case 'conversation_initiation_metadata':
           console.log('🎯 Conversación iniciada:', data)
           break
-          
+
         case 'user_transcript':
           if (data.user_transcription_event) {
             state.transcript = data.user_transcription_event.user_transcript
             console.log('👤 Usuario dijo:', state.transcript)
           }
           break
-          
+
         case 'agent_response':
           if (data.agent_response_event) {
             state.agentResponse = data.agent_response_event.agent_response
             console.log('🤖 Berles responde:', state.agentResponse)
           }
           break
-          
+
         case 'audio':
           // Reproducir audio recibido
           if (data.audio_event) {
@@ -166,23 +166,23 @@ export const useElevenLabs = () => {
             queueAudio(data.audio_event.audio_base_64)
           }
           break
-          
+
         case 'ping':
           // Responder a ping para mantener conexión
           if (data.ping_event) {
             setTimeout(() => {
               websocket.value?.send(JSON.stringify({
-                type: "pong",
+                type: 'pong',
                 event_id: data.ping_event.event_id
               }))
             }, data.ping_event.ping_ms || 0)
           }
           break
-          
+
         case 'interruption':
           console.log('⏸️ Interrupción detectada:', data.interruption_event?.reason)
           break
-          
+
         default:
           console.log('📦 Mensaje recibido:', data)
       }
@@ -216,6 +216,7 @@ export const useElevenLabs = () => {
       try {
         await playAudioChunk(audioBase64)
       } catch (error) {
+        console.error(error)
         console.log('⚠️ Error reproduciendo chunk de audio, continuando con el siguiente')
       }
     }
@@ -228,7 +229,7 @@ export const useElevenLabs = () => {
 
   // Reproducir chunk de audio
   const playAudioChunk = async (audioBase64: string): Promise<void> => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       try {
         if (!audioContext.value) {
           console.log('⚠️ AudioContext no disponible, saltando audio')
@@ -252,67 +253,68 @@ export const useElevenLabs = () => {
             const sampleRate = 16000 // ElevenLabs usa 16kHz típicamente
             const numberOfChannels = 1 // Mono
             const length = bytes.length / 2 // 16-bit samples
-            
+
             const audioBuffer = audioContext.value.createBuffer(numberOfChannels, length, sampleRate)
             const channelData = audioBuffer.getChannelData(0)
-            
+
             // Convertir bytes a float32 para AudioBuffer
             for (let i = 0; i < length; i++) {
-              const sample = (bytes[i * 2] | (bytes[i * 2 + 1] << 8))
-              // Convertir de signed 16-bit a float32 (-1.0 to 1.0)
+              const low = bytes[i * 2] ?? 0
+              const high = bytes[i * 2 + 1] ?? 0
+              const sample = (low | (high << 8))
               channelData[i] = sample < 32768 ? sample / 32768 : (sample - 65536) / 32768
             }
-            
+
             const source = audioContext.value.createBufferSource()
             const gainNode = audioContext.value.createGain()
-            
+
             source.buffer = audioBuffer
             gainNode.gain.value = state.volume
-            
+
             source.connect(gainNode)
             gainNode.connect(audioContext.value.destination)
-            
+
             source.onended = () => {
               console.log('🔚 Audio PCM terminó de reproducirse')
               resolve()
             }
-            
+
             source.start()
             console.log('▶️ Reproduciendo audio PCM...')
             return
           }
         } catch (pcmError) {
+          console.error(pcmError)
           console.log('⚠️ No es PCM válido, intentando otros formatos...')
         }
 
         // Fallback: intentar decodificar como formato estándar
         audioContext.value.decodeAudioData(bytes.buffer.slice())
-          .then(audioBuffer => {
+          .then((audioBuffer) => {
             console.log('✅ Audio decodificado exitosamente')
             const source = audioContext.value!.createBufferSource()
             const gainNode = audioContext.value!.createGain()
-            
+
             source.buffer = audioBuffer
             gainNode.gain.value = state.volume
-            
+
             source.connect(gainNode)
             gainNode.connect(audioContext.value!.destination)
-            
+
             source.onended = () => {
               console.log('🔚 Audio terminó de reproducirse')
               resolve()
             }
-            
+
             source.start()
             console.log('▶️ Reproduciendo audio...')
           })
-          .catch(error => {
+          .catch(() => {
             console.log('⚠️ Formato de audio no soportado, continuando sin audio')
             console.log('💬 La conversación continuará solo con texto')
             resolve() // Continuar sin audio
           })
-        
-      } catch (error) {
+      } catch {
         console.log('⚠️ Error general en audio, continuando sin reproducción')
         resolve() // Continuar sin audio
       }
@@ -323,7 +325,7 @@ export const useElevenLabs = () => {
   const startRecording = async (): Promise<boolean> => {
     try {
       console.log('🎤 Iniciando grabación...')
-      
+
       if (!state.isConnected) {
         console.log('⚠️ No conectado, intentando conectar primero...')
         const connected = await connect()
@@ -334,14 +336,14 @@ export const useElevenLabs = () => {
       }
 
       console.log('🎤 Solicitando permisos de micrófono...')
-      const stream = await navigator.mediaDevices.getUserMedia({ 
+      const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           sampleRate: 16000,
           channelCount: 1,
           echoCancellation: true,
           noiseSuppression: true,
           autoGainControl: true
-        } 
+        }
       })
 
       console.log('✅ Permisos de micrófono obtenidos')
@@ -389,12 +391,12 @@ export const useElevenLabs = () => {
       state.isRecording = true
       state.transcript = ''
       state.agentResponse = ''
-      
+
       console.log('✅ Grabación iniciada exitosamente')
       return true
     } catch (error) {
       console.error('❌ Error iniciando grabación:', error)
-      
+
       // Manejo específico de errores de permisos
       if (error instanceof DOMException) {
         switch (error.name) {
@@ -416,7 +418,7 @@ export const useElevenLabs = () => {
       } else {
         state.error = 'No se pudo acceder al micrófono'
       }
-      
+
       return false
     }
   }
@@ -434,27 +436,27 @@ export const useElevenLabs = () => {
   // Desconectar
   const disconnect = () => {
     stopRecording()
-    
+
     if (websocket.value) {
       websocket.value.close()
       websocket.value = null
     }
-    
+
     cleanup()
   }
 
   // Limpiar recursos
   const cleanup = () => {
     stopRecording()
-    
+
     audioQueue.value = []
     isPlayingAudio.value = false
-    
+
     if (audioContext.value) {
       audioContext.value.close()
       audioContext.value = null
     }
-    
+
     state.isConnected = false
     state.isRecording = false
     state.isPlaying = false
@@ -483,4 +485,4 @@ export const useElevenLabs = () => {
     setVolume,
     cleanup
   }
-} 
+}

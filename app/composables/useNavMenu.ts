@@ -3,9 +3,9 @@ import { useRoute } from 'nuxt/app'
 
 export enum NavPathEnum {
   home = '/',
+  courses = '/courses',
   clubs = '/clubs',
   berles = '/berles',
-  habilidadesClub = '/habilidades-club',
   profile = '/profile'
 }
 

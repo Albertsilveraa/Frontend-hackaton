@@ -41,7 +41,10 @@ const groupedEvents = computed((): Record<Event['category'], Event[]> => {
 })
 
 function formatDate(dateString: Date): string {
-  return new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long'
+  })
 }
 </script>
 
@@ -78,7 +81,11 @@ function formatDate(dateString: Date): string {
           <h2
             class="lg:sticky lg:top-16 text-xl font-semibold tracking-tight text-highlighted"
           >
-            {{ category.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase()) }}s
+            {{
+              category
+                .replace(/([A-Z])/g, " $1")
+                .replace(/^./, (str) => str.toUpperCase())
+            }}s
           </h2>
         </div>
 

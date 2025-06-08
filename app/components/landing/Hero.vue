@@ -46,10 +46,12 @@ const days = Array.from({ length: 31 }, (_, i) => i < 11)
       }"
     >
       <UPageSection
-        title="Cursos Generales"
+        title="Tus Cursos"
+        description="Obeserva tu progreso y mejora tus habilidades"
         :ui="{
-          container: 'flex items-center justify-center !py-0 !my-0 min-h-0',
-          title: 'text-left'
+          container: 'flex  !py-0 !my-0 min-h-0 text-left',
+          title: 'text-left text-xl sm:text-xl lg:text-2xl font-medium',
+          description: 'text-left mt-2 text-sm sm:text-md lg:text-sm text-muted'
         }"
       >
         <CardsCourses />

@@ -1,3 +1,5 @@
+import { useLocalDB } from './useLocalDB'
+
 interface User {
   id: string
   codigo: string
@@ -10,23 +12,23 @@ interface User {
 export const useAuth = () => {
   const isAuthenticated = ref(false)
   const user = ref<User | null>(null)
-  
-  const { 
-    initDB, 
-    login: dbLogin, 
-    logout: dbLogout, 
-    getCurrentUser, 
+
+  const {
+    initDB,
+    login: dbLogin,
+    logout: dbLogout,
+    getCurrentUser,
     saveAssessment,
-    clearDB 
+    clearDB
   } = useLocalDB()
 
   const checkAuth = () => {
     console.log('🔍 Verificando autenticación con DB local...')
-    
-    if (process.client) {
+
+    if (import.meta.client) {
       initDB()
       const currentUser = getCurrentUser()
-      
+
       if (currentUser) {
         user.value = currentUser
         isAuthenticated.value = true
@@ -39,12 +41,12 @@ export const useAuth = () => {
     }
   }
 
-  const login = async (credentials: { codigo: string; password: string }) => {
+  const login = async (credentials: { codigo: string, password: string }) => {
     try {
       console.log('🔑 Intentando login...', credentials.codigo)
-      
+
       const loggedUser = dbLogin(credentials.codigo, credentials.password)
-      
+
       if (loggedUser) {
         user.value = loggedUser
         isAuthenticated.value = true
@@ -70,21 +72,20 @@ export const useAuth = () => {
 
   const updateUserProfile = (learningProfile: any) => {
     console.log('📝 Guardando perfil de aprendizaje...', learningProfile)
-    
-    if (user.value && process.client) {
+
+    if (user.value && import.meta.client) {
       try {
         // Guardar assessment en la DB
         saveAssessment(user.value.id, [], learningProfile)
-        
+
         // Actualizar estado local
         user.value.hasCompletedAssessment = true
         user.value.learningProfile = learningProfile
-        
+
         console.log('✅ Perfil guardado exitosamente')
-        
+
         // Refrescar desde la DB para asegurar consistencia
         checkAuth()
-        
       } catch (error) {
         console.error('❌ Error guardando perfil:', error)
       }
@@ -122,4 +123,4 @@ export const useAuth = () => {
     needsAssessment: readonly(needsAssessment),
     clearAllData
   }
-} 
+}
