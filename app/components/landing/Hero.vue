@@ -14,20 +14,10 @@ const days = Array.from({ length: 31 }, (_, i) => i < 11)
   <UPageHero>
     <template #headline>
       <Motion
-        :initial="{
-          scale: 1.1,
-          opacity: 0,
-          filter: 'blur(20px)'
-        }"
-        :animate="{
-          scale: 1,
-          opacity: 1,
-          filter: 'blur(0px)'
-        }"
-        :transition="{
-          duration: 0.6,
-          delay: 0.1
-        }"
+        :initial="{ opacity: 0, y: 50 }"
+        :while-in-view="{ opacity: 1, y: 0 }"
+        :transition="{ duration: 0.7, delay: 0.1 }"
+        :in-view-options="{ once: true }"
       >
         <UPageSection
           :ui="{
