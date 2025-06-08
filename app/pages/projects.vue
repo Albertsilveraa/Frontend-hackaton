@@ -10,11 +10,138 @@ if (!page.value) {
   })
 }
 
-const { data: projects } = await useAsyncData('projects', () => {
-  return queryCollection('projects').all()
-})
-
 const { global } = useAppConfig()
+
+const comunidades = [
+  {
+    title: 'Club de Programación',
+    description:
+      'Espacio para aprender, compartir y participar en retos de código y tecnología.',
+    image: 'https://nuxt.com/assets/blog/nuxt-icon/cover.png',
+    date: '2024-06-12',
+    to: '#',
+    authors: [
+      {
+        name: 'Ana Ruiz',
+        avatar: { src: 'https://randomuser.me/api/portraits/women/51.jpg' }
+      },
+      {
+        name: 'Pedro Sánchez',
+        avatar: { src: 'https://randomuser.me/api/portraits/men/45.jpg' }
+      },
+      {
+        name: 'Luisa Torres',
+        avatar: { src: 'https://randomuser.me/api/portraits/women/52.jpg' }
+      },
+      {
+        name: 'Marta Aguilar',
+        avatar: { src: 'https://randomuser.me/api/portraits/men/49.jpg' }
+      },
+      {
+        name: 'Marta Aguilar',
+        avatar: {
+          src: 'https://i.ibb.co/cKGDKWcK/Chat-GPT-Image-7-jun-2025-09-38-58-p-m.png'
+        }
+      }
+    ]
+  },
+  {
+    title: 'UTP Deportes',
+    description:
+      'Vive la pasión por el deporte, participa en torneos y actividades deportivas.',
+    image: 'https://nuxt.com/assets/blog/nuxt-icon/cover.png',
+    date: '2024-06-10',
+    to: '#',
+    authors: [
+      {
+        name: 'Carlos Jiménez',
+        avatar: { src: 'https://randomuser.me/api/portraits/men/55.jpg' }
+      },
+      {
+        name: 'Marta Aguilar',
+        avatar: { src: 'https://randomuser.me/api/portraits/women/69.jpg' }
+      },
+      {
+        name: 'Marta Aguilar',
+        avatar: { src: 'https://randomuser.me/api/portraits/women/18.jpg' }
+      },
+      {
+        name: 'Marta Aguilar',
+        avatar: { src: 'https://randomuser.me/api/portraits/women/17.jpg' }
+      },
+      {
+        name: 'Marta Aguilar',
+        avatar: {
+          src: 'https://i.ibb.co/cKGDKWcK/Chat-GPT-Image-7-jun-2025-09-38-58-p-m.png'
+        }
+      }
+    ]
+  },
+  {
+    title: 'Club de Ciencia y Sociedad',
+    description:
+      'Explora proyectos de investigación, ferias y actividades para cambiar tu entorno.',
+    image: 'https://nuxt.com/assets/blog/nuxt-icon/cover.png',
+    date: '2024-06-09',
+    to: '#',
+    authors: [
+      {
+        name: 'Sofía Mendoza',
+        avatar: { src: 'https://randomuser.me/api/portraits/women/39.jpg' }
+      },
+      {
+        name: 'Esteban Gómez',
+        avatar: { src: 'https://randomuser.me/api/portraits/men/42.jpg' }
+      },
+      {
+        name: 'Andrés López',
+        avatar: { src: 'https://randomuser.me/api/portraits/men/41.jpg' }
+      },
+      {
+        name: 'Marta Aguilar',
+        avatar: { src: 'https://randomuser.me/api/portraits/women/84.jpg' }
+      },
+      {
+        name: 'Marta Aguilar',
+        avatar: {
+          src: 'https://i.ibb.co/cKGDKWcK/Chat-GPT-Image-7-jun-2025-09-38-58-p-m.png'
+        }
+      }
+    ]
+  },
+  {
+    title: 'Club de Ciencia y Sociedad',
+    description:
+      'Explora proyectos de investigación, ferias y actividades para cambiar tu entorno.',
+    image: 'https://nuxt.com/assets/blog/nuxt-icon/cover.png',
+    date: '2024-06-09',
+    to: '#',
+    authors: [
+      {
+        name: 'Sofía Mendoza',
+        avatar: { src: 'https://randomuser.me/api/portraits/women/15.jpg' }
+      },
+      {
+        name: 'Esteban Gómez',
+        avatar: { src: 'https://randomuser.me/api/portraits/men/29.jpg' }
+      },
+      {
+        name: 'Andrés López',
+        avatar: { src: 'https://randomuser.me/api/portraits/men/30.jpg' }
+      },
+      {
+        name: 'Esteban Gómez',
+        avatar: { src: 'https://randomuser.me/api/portraits/men/17.jpg' }
+      },
+      {
+        name: 'Andrés López',
+        avatar: {
+          src: 'https://i.ibb.co/cKGDKWcK/Chat-GPT-Image-7-jun-2025-09-38-58-p-m.png'
+        }
+      }
+    ]
+  }
+]
 
 useSeoMeta({
   title: page.value?.seo?.title || page.value?.title,
@@ -27,8 +154,10 @@ useSeoMeta({
 <template>
   <UPage v-if="page">
     <UPageHero
-      :title="page.title"
-      :description="page.description"
+      title="Comunidades"
+      description="Conoce las comunidades de estudiantes de la UTP y las actividades que realizan. Participa en
+      eventos, talleres y proyectos colaborativos, amplía tu red de contactos y potencia tu
+      vida universitaria al máximo."
       :links="page.links"
       :ui="{
         title: '!mx-0 text-left',
@@ -41,67 +170,49 @@ useSeoMeta({
           v-if="page.links"
           class="flex items-center gap-2"
         >
-          <UButton
-            :label="page.links[0]?.label"
-            :to="global.meetingLink"
-            v-bind="page.links[0]"
-          />
+          <NuxtLink
+            to="#comunidades"
+          >
+            <UButton
+              :label="page.links[0]?.label"
+              v-bind="page.links[0]"
+              color="neutral"
+              class="cursor-pointer"
+            />
+          </NuxtLink>
           <UButton
             :to="`mailto:${global.email}`"
             v-bind="page.links[1]"
+            color="error"
           />
         </div>
       </template>
     </UPageHero>
     <UPageSection
-      :ui="{
-        container: '!pt-0'
-      }"
+      id="comunidades"
+      :ui="{ container: '!pt-0' }"
     >
-      <Motion
-        v-for="(project, index) in projects"
-        :key="project.title"
-        :initial="{ opacity: 0, transform: 'translateY(10px)' }"
-        :while-in-view="{ opacity: 1, transform: 'translateY(0)' }"
-        :transition="{ delay: 0.2 * index }"
-        :in-view-options="{ once: true }"
-      >
-        <UPageCard
-          :title="project.title"
-          :description="project.description"
-          :to="project.url"
-          orientation="horizontal"
-          variant="naked"
-          :reverse="index % 2 === 1"
-          class="group"
-          :ui="{
-            wrapper: 'max-sm:order-last'
-          }"
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <Motion
+          v-for="(comunidad, index) in comunidades"
+          :key="comunidad.title"
+          :initial="{ opacity: 0, transform: 'translateY(10px)' }"
+          :while-in-view="{ opacity: 1, transform: 'translateY(0)' }"
+          :transition="{ delay: 0.2 * index }"
+          :in-view-options="{ once: true }"
         >
-          <template #leading>
-            <span class="text-sm text-muted">
-              {{ new Date(project.date).getFullYear() }}
-            </span>
-          </template>
-          <template #footer>
-            <ULink
-              :to="project.url"
-              class="text-sm text-primary flex items-center"
-            >
-              View Project
-              <UIcon
-                name="i-lucide-arrow-right"
-                class="size-4 text-primary transition-all opacity-0 group-hover:translate-x-1 group-hover:opacity-100"
-              />
-            </ULink>
-          </template>
-          <img
-            :src="project.image"
-            :alt="project.title"
-            class="object-cover w-full h-48 rounded-lg"
-          >
-        </UPageCard>
-      </Motion>
+          <UBlogPost
+            :title="comunidad.title"
+            :description="comunidad.description"
+            :image="comunidad.image"
+            :date="comunidad.date"
+            :to="comunidad.to"
+            orientation="vertical"
+            variant="outline"
+            :authors="comunidad.authors"
+          />
+        </Motion>
+      </div>
     </UPageSection>
   </UPage>
 </template>

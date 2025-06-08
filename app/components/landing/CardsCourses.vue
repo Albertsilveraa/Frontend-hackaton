@@ -33,7 +33,7 @@ const courses: Course[] = [
       'Mejora tus habilidades en el idioma inglés con ejercicios interactivos.',
     icon: 'i-heroicons-language',
     to: '#',
-    highlightColor: 'primary',
+    highlightColor: 'error',
     teacher: {
       name: 'Dra. Laura López',
       description: 'Responsable de Inglés',
@@ -64,7 +64,7 @@ const courses: Course[] = [
     description: 'Explora el mundo de los elementos y las reacciones químicas.',
     icon: 'i-heroicons-beaker',
     to: '#',
-    highlightColor: 'success',
+    highlightColor: 'neutral',
     teacher: {
       name: 'Dra. Alicia Mendoza',
       description: 'Responsable de Química',
@@ -79,7 +79,7 @@ const courses: Course[] = [
     description: 'Desarrolla tu razonamiento lógico y matemático.',
     icon: 'i-heroicons-calculator',
     to: '#',
-    highlightColor: 'warning',
+    highlightColor: 'error',
     teacher: {
       name: 'Ing. Carlos Ramírez',
       description: 'Responsable de Matemáticas',
@@ -94,7 +94,7 @@ const courses: Course[] = [
     description: 'Comprende los eventos y procesos históricos clave.',
     icon: 'i-heroicons-book-open',
     to: '#',
-    highlightColor: 'success',
+    highlightColor: 'error',
     teacher: {
       name: 'Lic. Gabriela Suárez',
       description: 'Responsable de Historia',
@@ -109,7 +109,7 @@ const courses: Course[] = [
     description: 'Aprende fundamentos de computación y programación.',
     icon: 'i-heroicons-computer-desktop',
     to: '#',
-    highlightColor: 'error',
+    highlightColor: 'neutral',
     teacher: {
       name: 'Dr. Emilio Torres',
       description: 'Responsable de Computación',
@@ -124,19 +124,28 @@ const courses: Course[] = [
 
 <template>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-    <UPageCard
+    <Motion
       v-for="(course, idx) in courses"
-      :key="idx"
-      :title="course.title"
-      :description="course.description"
-      :icon="course.icon"
-      :to="course.to"
-      target="_blank"
-      variant="soft"
+      :key="course.title"
+      :initial="{ opacity: 0, transform: 'translateY(16px)' }"
+      :while-in-view="{ opacity: 1, transform: 'translateY(0)' }"
+      :transition="{ delay: 0.08 * idx, duration: 0.5 }"
+      :in-view-options="{ once: true }"
     >
-      <template #footer>
-        <UUser v-bind="course.teacher" />
-      </template>
-    </UPageCard>
+      <UPageCard
+        :title="course.title"
+        :description="course.description"
+        :icon="course.icon"
+        :to="course.to"
+        target="_blank"
+        variant="soft"
+        :highlight="true"
+        :highlight-color="course.highlightColor"
+      >
+        <template #footer>
+          <UUser v-bind="course.teacher" />
+        </template>
+      </UPageCard>
+    </Motion>
   </div>
 </template>

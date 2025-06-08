@@ -1,24 +1,22 @@
 <script setup lang="ts">
-const props = defineProps<{
-  days: boolean[]
-}>()
-
 const { global } = useAppConfig()
-const daysPerRow = 7
-
-const rows = computed(() => {
-  return Array.from(
-    { length: Math.ceil(props.days.length / daysPerRow) },
-    (_, row) => props.days.slice(row * daysPerRow, (row + 1) * daysPerRow)
-  )
-})
+const weekDays = [
+  { initial: 'L', completed: true },
+  { initial: 'MA', completed: true },
+  { initial: 'MI', completed: true },
+  { initial: 'J', completed: true },
+  { initial: 'V', completed: true },
+  { initial: 'S', completed: false },
+  { initial: 'D', completed: false }
+]
 </script>
 
 <template>
   <div
-    class="flex flex-row items-start gap-2 sm:gap-4 md:gap-5 py-0 justify-center w-full max-w-full"
+    class="rounded-3xl shadow-lg px-6 py-8 flex flex-col md:flex-row items-center gap-8 max-w-2xl mx-auto bg-[#fff6e5] dark:bg-[#10171f] transition-colors duration-300"
   >
-    <div class="hidden md:block mr-4">
+    <!-- Avatar -->
+    <div class="flex justify-center md:block">
       <UColorModeAvatar
         class="size-50 ring ring-default ring-offset-3 ring-offset-(--ui-bg)"
         :light="global.picture?.light!"
@@ -27,42 +25,87 @@ const rows = computed(() => {
         src="https://i.ibb.co/p65zLCnG/c684b1f7-8134-41fe-8452-4a8c8bcb71dc.png"
       />
     </div>
-    <!-- Timeline -->
-    <div class="flex flex-col gap-5 justify-center w-full">
-      <div
-        v-for="(week, weekIdx) in rows"
-        :key="weekIdx"
-        class="flex items-center justify-center w-full"
-      >
-        <div
-          v-for="(done, i) in week"
-          :key="i"
-          class="flex items-center"
-        >
-          <div
-            class="w-5 h-5 sm:w-7 sm:h-9 md:w-9 md:h-9 flex items-center justify-center rounded-full border-2
-           text-[10px] sm:text-xs md:text-base transition-all duration-300
-           dark:bg-black dark:border-gray-600 dark:text-gray-400
-           bg-white border-gray-300 text-gray-600"
-            :class="done
-              ? 'border-red-500 bg-red-100 text-red-500 dark:bg-red-900/30 dark:text-red-500'
-              : ''"
+    <!-- Panel racha -->
+    <div class="flex-1 w-full flex flex-col items-center gap-4">
+      <div class="w-full flex flex-col items-center md:items-start">
+        <div class="flex items-center gap-2 mb-1">
+          <span
+            class="text-3xl md:text-4xl font-extrabold text-[#e29e15] dark:text-[#ffd46c]"
           >
-            <span
-              v-if="done"
-              class="font-bold"
-            >✔</span>
-            <span
-              v-else
-              class="font-bold"
-            >{{ weekIdx * 7 + i + 1 }}</span>
-          </div>
-          <!-- Línea de unión -->
-          <div
-            v-if="i < week.length - 1"
-            class="w-2 sm:w-4 md:w-6 h-0.5 mx-[1px] sm:mx-1 rounded bg-gray-300 dark:bg-gray-700"
-            :class="done ? 'bg-red-200 dark:bg-red-900/30' : ''"
-          />
+            372 días de racha
+          </span>
+          <img
+            src="https://i.ibb.co/DP7Tct64/flame.gif"
+            class="w-10 h-10"
+          >
+        </div>
+        <p
+          class="text-base text-[#ad8328] dark:text-[#ffca47]/90 text-center md:text-left leading-tight font-medium"
+        >
+          El protector de racha te salvó ayer.<br>
+          Hoy depende de ti. ¡Practica ahora!
+        </p>
+      </div>
+      <!-- Fondo de la racha -->
+      <div
+        class="rounded-xl px-7 py-4 shadow-md flex flex-col gap-2 w-full max-w-md bg-gray-100 dark:bg-[#232933] transition-colors duration-300"
+      >
+        <!-- Iniciales de los días -->
+        <div class="flex justify-between items-center mb-2">
+          <span
+            v-for="(d, i) in weekDays"
+            :key="'ini-' + i"
+            class="text-base font-extrabold tracking-wide uppercase flex justify-center"
+            :class="[
+              d.completed ? 'text-red-500 dark:text-red-400' : '',
+              d.initial === 'S' || d.initial === 'D'
+                ? 'text-yellow-600 dark:text-yellow-400'
+                : 'text-gray-400 dark:text-gray-400'
+            ]"
+            style="width: 48px; text-align: center"
+          >
+            {{ d.initial }}
+          </span>
+        </div>
+        <!-- Círculos -->
+        <div class="flex justify-between items-end relative h-6">
+          <template
+            v-for="(d, i) in weekDays"
+            :key="'day-' + i"
+          >
+            <div
+              class="flex flex-col items-center"
+              style="width: 48px"
+            >
+              <div
+                class="w-8 h-8 flex items-center justify-center rounded-full border-2 transition-all duration-300 text-xl font-bold select-none shadow"
+                :class="[
+                  d.completed
+                    ? 'bg-red-500 text-white border-red-500 dark:bg-red-400 dark:text-black dark:border-red-400'
+                    : d.initial === 'S' || d.initial === 'D'
+                      ? 'bg-transparent border-yellow-400 text-yellow-600 dark:border-yellow-400 dark:text-yellow-400'
+                      : 'bg-transparent border-gray-400 text-gray-400 dark:border-gray-500 dark:text-gray-500'
+                ]"
+              >
+                <svg
+                  v-if="d.completed"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  class="pointer-events-none"
+                >
+                  <path
+                    d="M5 10.5L8.5 14L15 7"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+            </div>
+          </template>
         </div>
       </div>
     </div>
