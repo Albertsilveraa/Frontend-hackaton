@@ -1,52 +1,52 @@
 <script setup lang="ts">
-import type { RadioGroupItem, RadioGroupValue } from '@nuxt/ui'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuth } from '#imports'
 
 const router = useRouter()
+const { isAuthenticated } = useAuth()
+
+if (isAuthenticated.value) {
+  navigateTo('/')
+}
 
 const questions = [
   {
     question: '¿Qué tan cómodo te sientes aprendiendo conceptos teóricos complejos? Piensa en materias como matemáticas, física o filosofía',
-    items: ['Muy incómodo', 'Muy cómodo'],
-    value: ref<RadioGroupValue>('Muy incómodo')
+    items: ['Muy incómodo', 'Muy cómodo']
   },
   {
     question: '¿Prefieres aprender haciendo ejercicios prácticos? Laboratorios, proyectos, experimentos',
-    items: ['Nunca', 'Siempre'],
-    value: ref<RadioGroupValue>('Nunca')
+    items: ['Nunca', 'Siempre']
   },
   {
     question: '¿Qué tan autodisciplinado eres con tu tiempo de estudio? Organización, cumplimiento de horarios, constancia',
-    items: ['Nada disciplinado', 'Muy disciplinado'],
-    value: ref<RadioGroupValue>('Nada disciplinado')
+    items: ['Nada disciplinado', 'Muy disciplinado']
   },
   {
     question: '¿Te motiva competir académicamente con otros estudiantes? Rankings, calificaciones comparativas, desafíos',
-    items: ['No me motiva', 'Me motiva mucho'],
-    value: ref<RadioGroupValue>('No me motiva')
+    items: ['No me motiva', 'Me motiva mucho']
   },
   {
     question: '¿Prefieres estudiar contenido multimedia (videos, audio, animaciones)? En lugar de solo texto y libros',
-    items: ['Solo texto', 'Solo multimedia'],
-    value: ref<RadioGroupValue>('Solo texto')
+    items: ['Solo texto', 'Solo multimedia']
   },
   {
     question: '¿Qué tan importante es recibir feedback constante sobre tu progreso? Comentarios, correcciones, evaluaciones frecuentes',
-    items: ['No necesito feedback', 'Necesito feedback constante'],
-    value: ref<RadioGroupValue>('No necesito feedback')
+    items: ['No necesito feedback', 'Necesito feedback constante']
   },
   {
     question: '¿Qué tan importante es para ti entender el \'por qué\' detrás de cada concepto? Profundidad vs. aplicación directa',
-    items: ['Solo quiero aplicar', 'Necesito entender todo'],
-    value: ref<RadioGroupValue>('Solo quiero aplicar')
+    items: ['Solo quiero aplicar', 'Necesito entender todo']
   },
   {
     question: '¿Te adaptas fácilmente a nuevos métodos de enseñanza? Flexibilidad ante cambios en la forma de aprender',
-    items: ['Me cuesta adaptarme', 'Me adapto muy fácil'],
-    value: ref<RadioGroupValue>('Me cuesta adaptarme')
+    items: ['Me cuesta adaptarme', 'Me adapto muy fácil']
   }
 ]
+
+// Valor inicial: primera opción de cada pregunta
+const answers = ref<string[]>(questions.map(q => q.items[0]))
 
 const currentIndex = ref(0)
 const transitioning = ref(false)
@@ -59,15 +59,11 @@ const next = () => {
     if (currentIndex.value < questions.length - 1) {
       currentIndex.value++
     } else {
+      // Aquí podrías procesar `answers.value` (enviarlas o guardarlas)
       router.push('/')
     }
     transitioning.value = false
   }, 300)
-}
-
-const { isAuthenticated } = useAuth()
-if (isAuthenticated.value) {
-  navigateTo('/')
 }
 
 useSeoMeta({
@@ -85,6 +81,7 @@ definePageMeta({ layout: false })
         <img
           src="https://i.ibb.co/Q3Br9xky/Chat-GPT-Image-8-jun-2025-05-05-05-p-m.png"
           width="200"
+          alt="Logo"
         >
         <div class="brand-section">
           <h2>🎯 Evaluación de Perfil de Aprendizaje</h2>
@@ -94,31 +91,45 @@ definePageMeta({ layout: false })
 
       <div class="login-form-section">
         <div class="login-form">
-          <Transition
-            name="slide-fade"
-            mode="out-in"
-          >
-            <div
-              :key="currentIndex"
-              class="form-group"
+          <div class="question-transition-wrapper">
+            <Transition
+              name="slide-fade"
+              mode="out-in"
             >
-              <label class="question">{{ questions[currentIndex].question }}</label>
-              <URadioGroup
-                v-model="questions[currentIndex].value"
-                color="primary"
-                class="radio-group"
-                :items="questions[currentIndex].items"
-              />
-            </div>
-          </Transition>
+              <div
+                :key="currentIndex"
+                class="form-group"
+              >
+                <label class="question">{{ questions[currentIndex].question }}</label>
+                <div class="options">
+                  <div
+                    v-for="(item, idx) in questions[currentIndex].items"
+                    :key="idx"
+                    class="custom-radio"
+                  >
+                    <input
+                      :id="`q${currentIndex}-opt${idx}`"
+                      v-model="answers[currentIndex]"
+                      type="radio"
+                      :name="`question-${currentIndex}`"
+                      :value="item"
+                    >
+                    <label :for="`q${currentIndex}-opt${idx}`">{{ item }}</label>
+                  </div>
+                </div>
+              </div>
+            </Transition>
+          </div>
 
-          <button
-            type="button"
-            class="login-button"
-            @click="next"
-          >
-            <span>Continuar</span>
-          </button>
+          <div class="button-wrapper">
+            <button
+              type="button"
+              class="login-button"
+              @click="next"
+            >
+              <span>Continuar</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -179,6 +190,14 @@ definePageMeta({ layout: false })
   max-width: 320px;
   width: 100%;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 220px;
+  justify-content: space-between;
+}
+
+.question-transition-wrapper {
+  min-height: 160px;
   position: relative;
 }
 
@@ -192,12 +211,55 @@ definePageMeta({ layout: false })
 
 .form-group .question {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   font-weight: 600;
   color: #374151;
-  white-space: normal;
-  word-break: break-word;
-  line-height: 1.4;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-radio {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.custom-radio input[type="radio"] {
+  /* ocultamos apariencia nativa y creamos círculo custom */
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid #6b7280;
+  border-radius: 50%;
+  position: relative;
+  margin: 0;
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+
+.custom-radio input[type="radio"]:checked::before {
+  content: '';
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: #6b7280;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.custom-radio label {
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.button-wrapper {
+  margin-top: 1rem;
 }
 
 .login-button {
@@ -211,7 +273,6 @@ definePageMeta({ layout: false })
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s;
-  margin-top: 1rem;
 }
 
 .login-button:hover:not(:disabled) {
@@ -229,10 +290,12 @@ definePageMeta({ layout: false })
   position: absolute;
   width: 100%;
 }
+
 .slide-fade-enter-from {
   transform: translateX(100%);
   opacity: 0;
 }
+
 .slide-fade-leave-to {
   transform: translateX(-100%);
   opacity: 0;
@@ -243,15 +306,12 @@ definePageMeta({ layout: false })
     grid-template-columns: 1fr;
     max-width: 400px;
   }
-
   .login-header {
     padding: 2rem 1rem;
   }
-
   .login-form-section {
     padding: 2rem 1rem;
   }
-
   .brand-section h2 {
     font-size: 1.25rem;
   }
