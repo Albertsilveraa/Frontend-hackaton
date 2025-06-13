@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import Insighst from '~/components/landing/Insighst.vue'
+
 const { data: page } = await useAsyncData('about', () => {
   return queryCollection('about').first()
 })
@@ -107,6 +109,13 @@ definePageMeta({ middleware: 'auth', layout: 'dashboard' })
     >
       <LandingAbout :page />
       <LandingClubs :page />
+    </UPageSection>
+    <UPageSection
+      :ui="{
+        container: '!pt-0'
+      }"
+    >
+      <Insighst :page />
     </UPageSection>
     <UPageSection
       :ui="{
